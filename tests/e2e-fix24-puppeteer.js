@@ -1,6 +1,6 @@
 // fix24: UFH – jedna konwencja (ZP, Antykoagulacja, Pompy) na ekranie i wydruku; KKCz – jeden przelicznik w obu zakładkach Transfuzjologii – tylko wypełnione pozycje, dawki/pompy, WNIOSKI; raport zbiorczy; Następny pacjent; samo przeglądanie nie dodaje modułu. BASE opcjonalne.
 const pp=require('puppeteer-core');
-const BASE=process.env.BASE||'http://localhost:8766/';
+const BASE=process.env.BASE||'http://localhost:8781/';
 const sleep=t=>new Promise(r=>setTimeout(r,t));
 let n=0,fail=0;const rec=(name,ok,info)=>{n++;if(!ok)fail++;console.log((ok?'PASS ':'FAIL ')+name+(ok?'':' :: '+String(info||'').slice(0,800)));};
 const JUNK=/Źródła|Źródło|Wytyczne i ChPL|ChPL 4\.2|Efekt:|Wpisz wynik|Wpisz masę|Nie wpisano|Brak danych do raportu|zatwierdzony przez lekarza|Tabela dawek|Drożność dróg|Osmolalność efektywna = 2×|Profilaktyka ZŻ|Ustawienia lokalne – DO/;

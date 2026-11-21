@@ -1,5 +1,5 @@
 const puppeteer=require('puppeteer-core');
-const BASE=process.env.BASE||'http://localhost:8766/';const SHOTS=process.env.SHOTS||'';
+const BASE=process.env.BASE||'http://localhost:8781/';const SHOTS=process.env.SHOTS||'';
 let fails=0;function rec(id,ok,msg){if(!ok)fails++;console.log(id.padEnd(62),ok?'PASS':'FAIL',String(msg||'').slice(0,300));}
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 (async()=>{const br=await puppeteer.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox'],headless:'new'});

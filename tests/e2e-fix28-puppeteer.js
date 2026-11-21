@@ -1,6 +1,6 @@
 // fix28: telefony pracowni endoskopowej w module Krwawienie z GI i Książce; NAC – objętość końcowa i ml/h na ekranie i w wydruku. BASE opcjonalne; SHOTS – katalog zrzutów (prefiks f19-).
 const pp=require('puppeteer-core');
-const BASE=process.env.BASE||'http://localhost:8766/',SHOTS=process.env.SHOTS||'';
+const BASE=process.env.BASE||'http://localhost:8781/',SHOTS=process.env.SHOTS||'';
 const sleep=t=>new Promise(r=>setTimeout(r,t));
 let n=0,fail=0;const rec=(name,ok,info)=>{n++;if(!ok)fail++;console.log((ok?'PASS ':'FAIL ')+name+(ok?'':' :: '+String(info||'').slice(0,900)));};
 (async()=>{

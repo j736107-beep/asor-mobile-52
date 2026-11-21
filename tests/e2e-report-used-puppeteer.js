@@ -1,6 +1,6 @@
 // Raport zbiorczy – tylko użyte panele (fix15). BASE, SHOTS opcjonalne.
 const pp=require('puppeteer-core'),fs=require('fs');
-const BASE=process.env.BASE||'http://localhost:8766/',SHOTS=process.env.SHOTS||'';
+const BASE=process.env.BASE||'http://localhost:8781/',SHOTS=process.env.SHOTS||'';
 const CLEAN="Przełyk bez zmian. Żołądek zapalny, podatny na insuflację, o sprawnej motoryce, jeziorko śluzowe skąpe, przezierne. Na kącie żołądka obecne owrzodzenie średnicy 2 cm pokryte włóknikiem, w centralnej części owrzodzenia widoczne sterczące, niekrwawiące naczynie (Forrest IIa), które skoagulowano w osłonie plazmy argonowej. W trakcie koagulacji obserwowano niewielkie krwawienie, które opanowano ostrzyknięciem owrzodzenia roztworem adrenaliny oraz ponowną koagulacją w osłonie plazmy argonowej. Na koniec zabiegu owrzodzenie pokryto proszkiem hemostatycznym; krwawienia nie obserwowano. W opuszce dwunastnicy widoczne kolejne owrzodzenie średnicy 1,5 cm pokryte włóknikiem (Forrest III). Część zstępująca dwunastnicy bez zmian.";
 const UNUSED=/Anafilaksja|Sepsa(?![\s\S]*nie)|Zatrucia|Kwasica ketonowa|Zatorowość|Ostra niewydolność|Omdlenie|Troponina|Stan padaczkowy|Elektrolity SOR|Antykoagulacja|Transfuzjologia|Neuroinfekcje|Zapalenie płuc|Adrenalina 0,5 mg|qSOFA/;
 const sleep=t=>new Promise(r=>setTimeout(r,t));

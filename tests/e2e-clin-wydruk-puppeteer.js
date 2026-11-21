@@ -1,6 +1,6 @@
 // fix20: wydruk ONS (ostra niewydolność serca), Zapalenie płuc, Zatrucia – tylko wypełnione pozycje, dawki/pompy, skale z kompletu, wnioski. BASE, SHOTS opcjonalne.
 const pp=require('puppeteer-core');
-const BASE=process.env.BASE||'http://localhost:8766/',SHOTS=process.env.SHOTS||'';
+const BASE=process.env.BASE||'http://localhost:8781/',SHOTS=process.env.SHOTS||'';
 const sleep=t=>new Promise(r=>setTimeout(r,t));
 let n=0,fail=0;const rec=(name,ok,info)=>{n++;if(!ok)fail++;console.log((ok?'PASS ':'FAIL ')+name+(ok?'':' :: '+String(info||'').slice(0,700)));};
 const JUNK=/Nie ustalonoNieTak|Źródła, wersje|Weryfikacja dostępu|Brak danych do raportu|SOR \/ MODUŁ KLINICZNY|Nie wpisano|Przed podaniem: wiek|Dalsza ocena|Morfina nie jest|Którą skalę wybrać|Jawny rachunek PSI|Diagnostyka i kontrola|Antizol \(etykieta\)|Hemodializa zmienia harmonogram|Etanol jako odtrutka|Pracownia Toksykologiczna|Kiedy ZAKOŃCZYĆ NAC|Zasada: nie czekaj|Uzupełnij parametry/;

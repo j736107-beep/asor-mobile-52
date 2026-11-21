@@ -1,5 +1,5 @@
 const puppeteer=require('puppeteer-core');const fs=require('fs');
-const BASE=process.env.BASE||'http://localhost:8766/';
+const BASE=process.env.BASE||'http://localhost:8781/';
 const R=[];function rec(id,ok,msg){R.push([id,ok?'PASS':'FAIL',msg||'']);console.log(id.padEnd(34),ok?'PASS':'FAIL',msg||'');}
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 (async()=>{

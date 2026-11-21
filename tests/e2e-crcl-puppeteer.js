@@ -1,7 +1,7 @@
 /* 11.11.2026: pole CrCl/eGFR w ZP – sama liczba (bez „auto:”), czarna, 2–3 cyfry mieszczą się (390 px i desktop).
-   BASE=http://localhost:8766/ SHOTS=/workspace/fix_crcl node e2e-crcl-puppeteer.js */
+   BASE=http://localhost:8781/ SHOTS=/workspace/fix_crcl node e2e-crcl-puppeteer.js */
 const puppeteer=require('puppeteer-core');const sleep=ms=>new Promise(r=>setTimeout(r,ms));
-const BASE=process.env.BASE||'http://localhost:8766/',SHOTS=process.env.SHOTS||'';let n=0,fail=0;function ok(c,m,d){n++;console.log((c?'PASS ':'FAIL ')+m+(c||!d?'':' — '+String(d).slice(0,300)));if(!c)fail++;}
+const BASE=process.env.BASE||'http://localhost:8781/',SHOTS=process.env.SHOTS||'';let n=0,fail=0;function ok(c,m,d){n++;console.log((c?'PASS ':'FAIL ')+m+(c||!d?'':' — '+String(d).slice(0,300)));if(!c)fail++;}
 (async()=>{const br=await puppeteer.launch({executablePath:process.env.CHROME||'/usr/bin/google-chrome',args:['--no-sandbox'],headless:'new'});
  for(const vp of [{w:390,h:844,m:true,n:'mobile-390'},{w:1280,h:900,m:false,n:'desktop-1280'}]){
   const page=await br.newPage();await page.setViewport({width:vp.w,height:vp.h,isMobile:vp.m,hasTouch:vp.m,deviceScaleFactor:vp.m?2:1});const errs=[];page.on('pageerror',e=>errs.push(e.message));

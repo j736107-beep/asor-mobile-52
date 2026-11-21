@@ -1,5 +1,5 @@
 const puppeteer=require('puppeteer-core');const fs=require('fs');
-const BASE=process.env.BASE||'http://localhost:8766/';
+const BASE=process.env.BASE||'http://localhost:8781/';
 const R=[];let fails=0;function rec(id,ok,msg){R.push([id,ok]);if(!ok)fails++;console.log(id.padEnd(60),ok?'PASS':'FAIL',String(msg||'').slice(0,400));}
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const hhmm=d=>('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2);

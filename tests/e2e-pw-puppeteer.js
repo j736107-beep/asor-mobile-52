@@ -1,9 +1,9 @@
 /* Przegląd wyników – test przeglądarkowy (5.2, opcjonalnie porównanie z 5.1: B51=url).
    Wykresy (SVG) dla każdego analitu z ≥2 pomiarami, brak „jednostka nierozpoznana”, wiek z paska pacjenta, wydruk A4, Następny pacjent.
-   BASE=http://localhost:8766/ node e2e-pw-puppeteer.js  (puppeteer-core, Chrome: CHROME=/usr/bin/google-chrome) */
+   BASE=http://localhost:8781/ node e2e-pw-puppeteer.js  (puppeteer-core, Chrome: CHROME=/usr/bin/google-chrome) */
 const puppeteer=require('puppeteer-core');const path=require('path');const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const C=require(process.env.CASES||path.join(__dirname,'data/pw_cases.js'));
-const BASE=process.env.BASE||'http://localhost:8766/',B51=process.env.B51||'',SHOTS=process.env.SHOTS||'';
+const BASE=process.env.BASE||'http://localhost:8781/',B51=process.env.B51||'',SHOTS=process.env.SHOTS||'';
 let n=0,fail=0;function ok(c,m){n++;if(!c){fail++;console.log('FAIL',m);}}
 async function openPW(p,base){await p.goto(base,{waitUntil:'networkidle0'});await p.evaluate(()=>{localStorage.clear();sessionStorage.clear();});await p.reload({waitUntil:'networkidle0'});
  await p.evaluate(()=>{const a=document.getElementById('pa');a.value='67';a.dispatchEvent(new Event('input',{bubbles:true}));a.dispatchEvent(new Event('change',{bubbles:true}));});

@@ -1,5 +1,5 @@
 // Wdrożenie audytu modułów (11.11.2026) – testy przeglądarkowe faz 1–3. BASE (domyślnie lokalnie :8765), SHOTS (katalog zrzutów), PHASE (1|2|3, domyślnie 3).
-const pp=require('puppeteer-core'),fs=require('fs');const BASE=process.env.BASE||'http://localhost:8766/',SHOTS=process.env.SHOTS||'',PHASE=+(process.env.PHASE||3);
+const pp=require('puppeteer-core'),fs=require('fs');const BASE=process.env.BASE||'http://localhost:8781/',SHOTS=process.env.SHOTS||'',PHASE=+(process.env.PHASE||3);
 const sleep=t=>new Promise(r=>setTimeout(r,t));let n=0,fail=0;const rec=(name,ok,info)=>{n++;if(!ok)fail++;console.log((ok?'PASS ':'FAIL ')+name+(ok?'':' :: '+String(info||'').slice(0,300)));};
 (async()=>{const br=await pp.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});const page=await br.newPage();await page.setViewport({width:1280,height:900});
 const errs=[];page.on('pageerror',e=>errs.push(e.message));

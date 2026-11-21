@@ -1,5 +1,5 @@
 const puppeteer=require('puppeteer-core');
-const BASE=process.env.BASE||'http://localhost:8766/';
+const BASE=process.env.BASE||'http://localhost:8781/';
 let fails=0;function rec(id,ok,msg){if(!ok)fails++;console.log(id.padEnd(60),ok?'PASS':'FAIL',String(msg||'').slice(0,300));}
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 (async()=>{const br=await puppeteer.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox'],headless:'new'});

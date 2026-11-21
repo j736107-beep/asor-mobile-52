@@ -1,6 +1,6 @@
 // fix19: wydruk Zatorowość płucna (UFH: bolus + wlew + pompa) i wspólny mechanizm „Drukuj” dla dawek z masy (Antykoagulacja, Pompy). BASE, SHOTS opcjonalne.
 const pp=require('puppeteer-core');
-const BASE=process.env.BASE||'http://localhost:8766/',SHOTS=process.env.SHOTS||'';
+const BASE=process.env.BASE||'http://localhost:8781/',SHOTS=process.env.SHOTS||'';
 const sleep=t=>new Promise(r=>setTimeout(r,t));
 let n=0,fail=0;const rec=(name,ok,info)=>{n++;if(!ok)fail++;console.log((ok?'PASS ':'FAIL ')+name+(ok?'':' :: '+String(info||'').slice(0,600)));};
 const DIDACT=/Źródła, wersje|Rozbieżność schematów|Nie zwiększaj stężenia|Nie wpisano rzeczywistej|Przed podaniem: wiek|Weryfikacja dostępu|Brak danych do raportu|SOR \/ MODUŁ KLINICZNY|Łączna ilość w pompie j\.m\.:|Nie ustalonoNieTak/;

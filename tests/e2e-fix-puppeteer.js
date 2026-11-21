@@ -1,7 +1,7 @@
 /* 11.11.2026: Sepsa – antybiotyki wg KAŻDEGO ogniska; Zapalenie płuc – CrCl na żywo (pola / wiek i płeć z paska), CURB-65 = 2 → dom wybieralny z rekomendacją; brak blokady wypisu.
-   BASE=http://localhost:8766/ node e2e-fix-puppeteer.js */
+   BASE=http://localhost:8781/ node e2e-fix-puppeteer.js */
 const puppeteer=require('puppeteer-core');const sleep=ms=>new Promise(r=>setTimeout(r,ms));
-const BASE=process.env.BASE||'http://localhost:8766/';let n=0,fail=0;function ok(c,m,d){n++;console.log((c?'PASS ':'FAIL ')+m+(c||!d?'':' — '+String(d).slice(0,300)));if(!c)fail++;}
+const BASE=process.env.BASE||'http://localhost:8781/';let n=0,fail=0;function ok(c,m,d){n++;console.log((c?'PASS ':'FAIL ')+m+(c||!d?'':' — '+String(d).slice(0,300)));if(!c)fail++;}
 (async()=>{const br=await puppeteer.launch({executablePath:process.env.CHROME||'/usr/bin/google-chrome',args:['--no-sandbox'],headless:'new'});
  const page=await br.newPage();await page.setViewport({width:1300,height:1400});const errs=[];page.on('pageerror',e=>errs.push(e.message));page.on('console',m=>{if(m.type()==='error')errs.push(m.text());});page.on('dialog',d=>d.accept());
  const fresh=async()=>{await page.goto(BASE,{waitUntil:'networkidle0'});await page.evaluate(()=>{localStorage.clear();sessionStorage.clear();});await page.reload({waitUntil:'networkidle0'});};

@@ -1,6 +1,6 @@
 // fix25: rejestr leczenia usunięty, Bilans płynów (płyny + inne straty), Antykoagulacja – kratka w nagłówku, SpO₂, napisy usunięte, AI ukryte, AF czytelniej, wersja i data. BASE opcjonalne.
 const pp=require('puppeteer-core');
-const BASE=process.env.BASE||'http://localhost:8766/';
+const BASE=process.env.BASE||'http://localhost:8781/';
 const sleep=t=>new Promise(r=>setTimeout(r,t));
 let n=0,fail=0;const rec=(name,ok,info)=>{n++;if(!ok)fail++;console.log((ok?'PASS ':'FAIL ')+name+(ok?'':' :: '+String(info||'').slice(0,800)));};
 const JUNK=/Źródła|Źródło|Wytyczne i ChPL|ChPL 4\.2|Efekt:|Wpisz wynik|Wpisz masę|Nie wpisano|Brak danych do raportu|zatwierdzony przez lekarza|Tabela dawek|Drożność dróg|Osmolalność efektywna = 2×|Profilaktyka ZŻ|Ustawienia lokalne – DO/;

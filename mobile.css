@@ -1,0 +1,122 @@
+/* m52: układ MOBILNY (Samsung Galaxy S25 Ultra ~412×915 CSS px; testowane 360–430 px). Tylko ekran – wydruk (@media print) bez zmian.
+   Zasady: jedna kolumna, brak poziomego przewijania, czcionka bazowa 17 px, pola/przyciski ≥48 px, pola ≥16 px (brak zoomu przy focusie),
+   tabele → karty (mobile.js nadaje data-label), kompaktowy nagłówek, panel pacjenta zwijany, dolna nawigacja, safe-area. */
+@media screen{
+:root{--fs:17px;--mnav:62px}
+html{font-size:17px;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+html.m52-top body{height:100vh;height:100dvh;overflow:hidden}
+body{font-size:17px;line-height:1.45;overflow-wrap:anywhere;-webkit-hyphens:auto;hyphens:auto}
+body,#wrap,#main{max-width:100vw}
+*{min-width:0}
+img,svg,video,canvas,iframe{max-width:100%}
+pre,code{white-space:pre-wrap;overflow-wrap:anywhere}
+/* --- nagłówek kompaktowy (sticky: poza obszarem przewijania #main) --- */
+header#top{position:sticky;top:0;z-index:60;display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;padding:calc(6px + env(safe-area-inset-top)) calc(8px + env(safe-area-inset-right)) 6px calc(8px + env(safe-area-inset-left));background:#fff;border-bottom:1px solid #d5e1e5}
+header#top>#printMod,header#top>#srcMod,header#top>#printAll,header#top>#nextPt,header#top>#pinModule,header#top>.connection-state{display:none!important}
+#top .brand{flex:1 1 auto;min-width:0;font-size:1rem;white-space:normal;line-height:1.15;overflow:hidden}
+#top .brand small{display:block;font-size:14px!important;color:#4f6876;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#mobileMenu{display:none!important}
+#mPtChip{flex:0 1 auto;max-width:52%;min-height:48px;border:1px solid #9fbac4;background:#eef6f8;color:#123;border-radius:24px;padding:4px 12px;font-weight:700;font-size:15px;line-height:1.2;text-align:left}
+#mPtChip.empty{background:#fff4dc;border-color:#e3a43a}
+#lamp{width:26px;height:26px;flex:0 0 26px}
+#mute{min-width:48px;min-height:48px;font-size:1.3rem}
+#pbar{display:none!important;flex:1 1 100%;order:10;width:100%}
+body.m-pt-open #pbar{display:grid!important;grid-template-columns:1fr 1fr;gap:8px 10px;align-items:end;padding:6px 0 4px;max-height:62vh;overflow-y:auto}
+#pbar label{display:flex!important;flex-direction:column;align-items:stretch!important;gap:2px!important;font-size:14px!important;font-weight:700}
+#pbar input{width:100%!important;font-size:17px!important;min-height:48px;padding:8px 10px;border:1px solid #b9ccd3!important}
+#pbar .pid{display:contents}
+#pbar #pbName{width:100%!important}
+#pbar label:has(#pbName){grid-column:1/-1}
+#pbar .pill{display:flex;align-items:center;justify-content:center;min-height:48px;font-size:15px!important}
+#pbar .tgs{grid-column:1/-1;display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+#pbar .tg,#pbar .seg button,#pbar button{min-height:48px;font-size:15px!important;padding:6px 8px}
+#pbar .seg{display:flex;gap:6px}#pbar .seg button{flex:1}
+/* --- obszar modułu --- */
+#wrap{position:relative}
+#main{padding:12px calc(12px + env(safe-area-inset-right)) 24px calc(12px + env(safe-area-inset-left))!important;overflow-x:hidden;overflow-y:auto;-webkit-overflow-scrolling:touch;font-size:17px}
+#main.fr{padding:0!important}
+#main iframe{height:100%}
+#main>h2,#main h2{font-size:1.35rem;line-height:1.25;overflow-wrap:anywhere}
+#main h3{font-size:1.1rem;overflow-wrap:anywhere}
+#main p,#main li,#main td,#main th,#main div,#main span,#main label,#main b,#main a{overflow-wrap:anywhere}
+.eyebrow{font-size:14px!important;letter-spacing:.06em!important}
+.mut,small,.lead{font-size:15px}
+/* moduł: pasek „Wróć / Pulpit / Drukuj” w jednym rzędzie */
+#skNav{display:grid!important;grid-template-columns:1fr 1fr 1fr;gap:6px;margin:0 0 10px!important;position:static}
+#skNav button{min-height:48px;padding:6px 6px!important;font-size:14px!important;line-height:1.15;border-radius:10px!important;white-space:normal}
+#skNav button span{display:none}
+/* --- elementy formularzy: duże, bez zoomu --- */
+input,select,textarea{font-size:17px!important;max-width:100%}
+input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=color]),select,textarea{min-height:48px;padding:8px 10px}
+#main select,#main textarea{width:100%}
+#main input:not([type=checkbox]):not([type=radio]):not([type=range]){max-width:100%}
+input[type=range]{width:100%;min-height:44px}
+button{min-height:48px;font-size:16px;touch-action:manipulation}
+.tabs,.wb-tabs,.clinical-tabs{display:flex!important;flex-wrap:wrap!important;gap:6px!important;overflow:visible!important}
+.tabs button,.wb-tabs button,.clinical-tabs button{flex:1 1 auto;min-height:48px;margin:0!important;font-size:15px!important;padding:8px 10px!important;white-space:normal}
+input[type=checkbox],input[type=radio]{width:26px!important;height:26px!important;min-width:26px;transform:none!important;margin:0 8px 0 2px!important;flex:0 0 26px;accent-color:#125469;vertical-align:middle}
+label:has(>input[type=checkbox]),label:has(>input[type=radio]){display:flex!important;align-items:center;min-height:48px;gap:6px;padding:4px 0;cursor:pointer}
+a.tel,a[href^="tel:"]{display:inline-flex;align-items:center;min-height:44px;padding:0 4px}
+.row{flex-direction:column;align-items:stretch!important;gap:8px!important}
+.row label{flex-wrap:wrap}
+.nih{grid-template-columns:1fr!important}
+.nih select{max-width:100%!important}
+.info{min-width:44px;min-height:44px}
+.box{padding:10px 12px!important}
+.hero-grid,.gi-grid,.clinical-grid,.kalk-grid{grid-template-columns:1fr!important}
+[style*="grid-template-columns"]{grid-template-columns:1fr!important}
+[style*="white-space:nowrap"],[style*="white-space: nowrap"]{white-space:normal!important}
+/* przewijane kontenery tabel – bez poziomego scrolla */
+.b1tw,.clinical-table,.tblwrap,.table-wrap,[style*="overflow-x"],[style*="overflow:auto"]{overflow-x:visible!important;max-width:100%}
+/* --- tabele → karty (mobile.js: table.m-cards, td[data-label]) --- */
+table{max-width:100%}
+table.m-cards,table.m-cards>tbody,table.m-cards>tfoot,table.m-cards>tbody>tr,table.m-cards>tfoot>tr,table.m-cards>tr,table.m-cards td,table.m-cards th{display:block!important;width:auto!important;min-width:0!important}
+table.m-cards{border:0!important;background:transparent!important;border-collapse:separate}
+table.m-cards>thead,table.m-cards tr.m-head{display:none!important}
+table.m-cards>tbody>tr,table.m-cards>tr,table.m-cards>tfoot>tr{border:1px solid #c9d8de;border-radius:12px;margin:0 0 10px;padding:8px 12px;background:#fff;box-shadow:0 1px 3px rgba(17,44,61,.06)}
+table.m-cards td,table.m-cards th{border:0!important;padding:4px 0!important;text-align:left!important;white-space:normal!important}
+table.m-cards td[data-label]:not([data-label=""]){display:grid!important;grid-template-columns:minmax(96px,40%) 1fr;gap:4px 10px;align-items:baseline}
+table.m-cards td[data-label]:not([data-label=""])::before{content:attr(data-label);font-weight:700;color:#4b6571;font-size:14px}
+table.m-cards td.m-title,table.m-cards th.m-title{display:block!important;font-weight:800;font-size:1.05rem;color:#123a4d;border-bottom:1px solid #e3ecef!important;padding-bottom:6px!important;margin-bottom:4px}
+table.m-cards td.m-title::before{display:none!important;content:none!important}
+table.m-cards tr.m-sect{background:#eef4f6;border-color:#d5e1e5}
+table.m-cards td:empty{display:none!important}
+table.m-tbl2{width:100%!important;table-layout:auto}
+table.m-tbl2 td,table.m-tbl2 th{white-space:normal!important;overflow-wrap:anywhere;word-break:break-word}
+/* --- poprawki z audytu 412 px --- */
+select{min-height:48px!important;height:auto!important}
+summary{padding:12px 4px!important;line-height:1.3;min-height:44px;cursor:pointer}
+a[href]{min-height:44px;display:inline-flex;align-items:center;flex-wrap:wrap;max-width:100%}
+p a[href],li a[href],td a[href],.mut a[href],small a[href],span a[href]{min-height:0;display:inline}
+a.tl-mail{min-height:44px!important;display:inline-flex!important}
+#steps{flex-wrap:wrap!important;overflow:visible!important}#steps button{flex:1 1 45%!important;min-height:48px;font-size:15px!important}
+input[size]:not([size="1"]):not([size="2"]):not([size="3"]):not([size="4"]):not([size="5"]):not([size="6"]){width:100%}
+label{max-width:100%}
+li a[href]{display:inline-block;padding:12px 0;line-height:20px}
+#ecg,.fx,.tiles,.b1ci,.nih{grid-template-columns:minmax(0,1fr)!important}
+svg[width]{max-width:100%;height:auto}
+.disc{font-size:14px!important}
+/* --- dolna nawigacja + arkusz „Więcej” --- */
+#mNav{flex:0 0 auto;display:grid;grid-template-columns:repeat(5,1fr);gap:2px;background:#112c3d;padding:4px calc(4px + env(safe-area-inset-right)) calc(4px + env(safe-area-inset-bottom)) calc(4px + env(safe-area-inset-left));z-index:70}
+#mNav button{min-height:54px;border:0;border-radius:10px;background:transparent;color:#e2eef3;font-size:14px;font-weight:700;line-height:1.1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:4px 2px}
+#mNav button i{font-style:normal;font-size:1.25rem}
+#mNav button.on,#mNav button[aria-expanded=true]{background:#225066;color:#fff}
+#mMore{position:fixed;left:0;right:0;bottom:calc(var(--mnav) + env(safe-area-inset-bottom));z-index:80;background:#fff;border-radius:16px 16px 0 0;box-shadow:0 -10px 30px rgba(17,44,61,.25);padding:14px calc(14px + env(safe-area-inset-right)) 14px calc(14px + env(safe-area-inset-left));display:none;flex-direction:column;gap:8px;max-height:70vh;overflow-y:auto}
+body.m-more-open #mMore{display:flex}
+#mMore button{display:block!important;width:100%;min-height:52px;text-align:left;font-size:17px!important;padding:10px 14px!important;border:1px solid #c4d4da;border-radius:12px;background:#f6fafb}
+#mMore h4{margin:0 0 4px;font-size:15px;color:#4b6571}
+/* --- menu modułów: pełny ekran --- */
+#sidebar{display:none!important;position:fixed!important;left:0;right:0;top:0;bottom:calc(var(--mnav) + env(safe-area-inset-bottom));width:auto!important;min-width:0!important;z-index:75;padding-top:env(safe-area-inset-top)}
+body.nav-open #sidebar{display:flex!important}
+#side button{min-height:50px;font-size:17px!important;padding:10px 14px!important}
+.nav-tools input,#moduleSearch{min-height:48px;font-size:17px!important;width:100%}
+.nav-tools label{font-size:14px!important}
+.nav-tools button,#favoritesOnly{min-height:48px;font-size:15px!important}
+#sidebar *{font-size:max(14px,1em)}
+/* --- modale / okna --- */
+.ov{padding:10px}.dlg{max-width:96vw!important;max-height:90vh;overflow-y:auto}
+#toTop{bottom:calc(var(--mnav) + 14px + env(safe-area-inset-bottom))!important;min-width:48px;min-height:48px}
+/* większe, wyraźne wyniki dawek */
+.big{font-size:1.45rem}
+.t3-dose,.clinical-result{font-size:17px}
+}

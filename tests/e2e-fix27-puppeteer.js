@@ -1,6 +1,6 @@
 // fix27: Zatrucia – zakładki „Leki psychiatryczne i p/padaczkowe”, „Leki kardiologiczne”, „Substancje chemiczne” (UI, dawki z masą ciała, pompy, EXTRIP, wydruk). BASE opcjonalne; SHOTS – katalog zrzutów.
 const pp=require('puppeteer-core');
-const BASE=process.env.BASE||'http://localhost:8766/',SHOTS=process.env.SHOTS||'';
+const BASE=process.env.BASE||'http://localhost:8781/',SHOTS=process.env.SHOTS||'';
 const sleep=t=>new Promise(r=>setTimeout(r,t));
 let n=0,fail=0;const rec=(name,ok,info)=>{n++;if(!ok)fail++;console.log((ok?'PASS ':'FAIL ')+name+(ok?'':' :: '+String(info||'').slice(0,800)));};
 (async()=>{

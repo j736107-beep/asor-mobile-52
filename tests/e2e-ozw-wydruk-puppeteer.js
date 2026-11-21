@@ -1,6 +1,6 @@
 // OZW (Troponina): wydruk modułu i raport zbiorczy – tylko wypełnione pola, RBBB w opisie EKG, skale z kompletu, wnioski. BASE, SHOTS opcjonalne.
 const pp=require('puppeteer-core'),fs=require('fs');
-const BASE=process.env.BASE||'http://localhost:8766/',SHOTS=process.env.SHOTS||'';
+const BASE=process.env.BASE||'http://localhost:8781/',SHOTS=process.env.SHOTS||'';
 const sleep=t=>new Promise(r=>setTimeout(r,t));
 let n=0,fail=0;const rec=(name,ok,info)=>{n++;if(!ok)fail++;console.log((ok?'PASS ':'FAIL ')+name+(ok?'':' :: '+String(info||'').slice(0,700)));};
 // treści, które NIE mogą trafić na wydruk (niezaznaczone pozycje, karty dydaktyczne, negacje bez zaznaczenia)

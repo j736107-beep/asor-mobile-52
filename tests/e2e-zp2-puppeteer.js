@@ -1,7 +1,7 @@
 /* 11.11.2026 (ZP2): brak rekomendacji domyślnej; rekomendacja po minimum danych; macierz miejsce × alergia × KAŻDY modyfikator → schemat się zmienia.
-   BASE=http://localhost:8766/ SHOTS=/workspace/fix_zp2 node e2e-zp2-puppeteer.js */
+   BASE=http://localhost:8781/ SHOTS=/workspace/fix_zp2 node e2e-zp2-puppeteer.js */
 const puppeteer=require('puppeteer-core');const sleep=ms=>new Promise(r=>setTimeout(r,ms));
-const BASE=process.env.BASE||'http://localhost:8766/',SHOTS=process.env.SHOTS||'';let n=0,fail=0;function ok(c,m,d){n++;if(!c||process.env.V)console.log((c?'PASS ':'FAIL ')+m+(c||!d?'':' — '+String(d).slice(0,300)));if(!c)fail++;}
+const BASE=process.env.BASE||'http://localhost:8781/',SHOTS=process.env.SHOTS||'';let n=0,fail=0;function ok(c,m,d){n++;if(!c||process.env.V)console.log((c?'PASS ':'FAIL ')+m+(c||!d?'':' — '+String(d).slice(0,300)));if(!c)fail++;}
 (async()=>{const br=await puppeteer.launch({executablePath:process.env.CHROME||'/usr/bin/google-chrome',args:['--no-sandbox'],headless:'new'});
  const page=await br.newPage();await page.setViewport({width:1200,height:1500});const errs=[];page.on('pageerror',e=>errs.push(e.message));page.on('console',m=>{if(m.type()==='error')errs.push(m.text());});
  const shot=async f=>{if(SHOTS){require('fs').mkdirSync(SHOTS,{recursive:true});await page.screenshot({path:SHOTS+'/'+f,fullPage:false});}};

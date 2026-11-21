@@ -1,6 +1,6 @@
 // Pilot „Epikryza (AI)” – test przeglądarkowy. API AI jest ATRAPĄ (przechwytywanie żądań puppeteer) – brak prawdziwych wywołań i kluczy.
 const puppeteer=require('puppeteer-core'),fs=require('fs');
-const BASE=process.env.BASE||'http://localhost:8766/';const SHOTS=process.env.SHOTS||'';
+const BASE=process.env.BASE||'http://localhost:8781/';const SHOTS=process.env.SHOTS||'';
 let fails=0;function rec(id,ok,msg){if(!ok)fails++;console.log(id.padEnd(66),ok?'PASS':'FAIL',String(msg||'').slice(0,260));}
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const SAMPLE='EPIKRYZA\nPacjent 82-letni przyjęty do SOR z powodu gorączki i kaszlu od 3 dni. RR 32/min, SBP 95 mmHg, HR 118/min, SpO₂ 84%, splątanie. CURB-65 4/5. PSI klasa V. Miejsce leczenia: Ciężkie PZP – OIOM / OIT rozważany.\n\nROZPOZNANIA ICD-10\nJ18.9 – Zapalenie płuc, nieokreślone\n\nUZASADNIENIE PRZEKAZANIA DO OIT\nCiężka hipoksemia (SpO₂ 84%) i ≥3 małe kryteria ATS/IDSA.\n\n=====\nUWAGI DLA LEKARZA\n- Brak wyniku RTG klatki piersiowej.\n- Zweryfikuj dawkę klarytromycyny przy QT.';
