@@ -11,7 +11,7 @@ let n=0,fail=0;const rec=(name,ok,info)=>{n++;if(!ok)fail++;console.log((ok?'PAS
   const errs=[];page.on('pageerror',e=>errs.push(e.message));page.on('dialog',d=>d.accept());
   await page.goto(BASE+'?t='+Date.now(),{waitUntil:'networkidle2',timeout:60000});
   await page.evaluate(async()=>{try{for(const r of await navigator.serviceWorker.getRegistrations())await r.unregister();for(const k of await caches.keys())await caches.delete(k);}catch(e){}localStorage.clear();sessionStorage.clear();});
-  await page.goto(BASE+'?t='+Date.now(),{waitUntil:'networkidle2',timeout:60000});await page.evaluate(()=>{window.__pr=0;window.print=()=>{window.__pr++;};});await sleep(600);
+  await page.goto(BASE+'?t='+Date.now(),{waitUntil:'networkidle2',timeout:60000});await sleep(600);
   const setP=o=>page.evaluate(o=>{for(const [id,v] of Object.entries(o)){const e=document.getElementById(id);e.value=v;e.dispatchEvent(new Event('input',{bubbles:true}));}},o);
   const hs=()=>page.evaluate(()=>{const d=document.documentElement,m=document.getElementById('main');return d.scrollWidth<=d.clientWidth+1&&(!m||m.scrollWidth<=m.clientWidth+1);});
   const SHP=process.env.SHOTP||'m1-';const shot=async name=>{if(!SHOTS)return;await sleep(600);await page.screenshot({path:SHOTS.replace(/\/$/,'')+'/'+name.replace(/^m1-/,SHP)});};
@@ -28,14 +28,14 @@ let n=0,fail=0;const rec=(name,ok,info)=>{n++;if(!ok)fail++;console.log((ok?'PAS
   rec('localStorage z prefiksem m52: (osobno od PC v52:)',st.pref==='m52:'&&st.ks.length>0&&st.ks.every(k=>k.indexOf('m52:')===0),JSON.stringify(st));
   // nagłówek kompaktowy, chip
   const hd=await page.evaluate(()=>{const h=document.getElementById('top');document.body.classList.remove('m-pt-open');return{h:h.getBoundingClientRect().height,chip:document.getElementById('mPtChip').textContent,pos:getComputedStyle(h).position,base:getComputedStyle(document.documentElement).fontSize};});
-  rec('t69u: górny pasek ≤38 px (1 cm, bez safe-area) przy zwiniętym panelu, jeden rząd, sticky, chip „60 l. · 80 kg”, czcionka bazowa 17 px',hd.h<=38&&hd.pos==='sticky'&&/60 l\./.test(hd.chip)&&/80 kg/.test(hd.chip)&&hd.base==='17px',JSON.stringify(hd));
+  rec('t70u: górny pasek ≤28 px (bez safe-area) przy zwiniętym panelu, jeden rząd, sticky, chip „60 l. · 80 kg”, czcionka bazowa 17 px',hd.h<=28&&hd.pos==='sticky'&&/60 l\./.test(hd.chip)&&/80 kg/.test(hd.chip)&&hd.base==='17px',JSON.stringify(hd));
   await page.tap('#mPtChip');await sleep(300);
   const po=await page.evaluate(()=>{const p=document.getElementById('pbar');const r=p.getBoundingClientRect();const pw=document.getElementById('pw').getBoundingClientRect();return{open:document.body.classList.contains('m-pt-open'),h:r.height,pwH:pw.height,fs:getComputedStyle(document.getElementById('pw')).fontSize};});
   rec('Dotknięcie chipu otwiera panel pacjenta; pole masy ≥48 px, czcionka ≥16 px',po.open&&po.h>100&&po.pwH>=48&&parseFloat(po.fs)>=16,JSON.stringify(po));
   await page.tap('[data-mnav="pt"]');await sleep(300);rec('„Pacjent” w dolnym pasku zamyka panel',!(await page.evaluate(()=>document.body.classList.contains('m-pt-open'))),'');
   // dolna nawigacja
   const nv=await page.evaluate(()=>{const n=document.getElementById('mNav');const r=n.getBoundingClientRect();return{labels:[...n.querySelectorAll('button')].map(b=>b.getAttribute('aria-label')),vis:[...n.querySelectorAll('.m-lbl')].filter(s=>s.getBoundingClientRect().width>1).map(s=>s.textContent).join(''),h:r.height,bottom:Math.round(r.bottom),vh:innerHeight,minW:Math.min(...[...n.querySelectorAll('button')].map(b=>b.getBoundingClientRect().width))};});
-  rec('t69u: dolna nawigacja ≤19 px (0,5 cm, bez safe-area), same ikonki (etykiety w aria-label: Moduły, Pulpit, Pacjent, Drukuj, Więcej), szerokie obszary ≥70 px, przy dolnej krawędzi',JSON.stringify(nv.labels)==='["Moduły","Pulpit","Pacjent","Drukuj","Więcej"]'&&nv.h<=19&&!nv.vis&&nv.minW>=70&&Math.abs(nv.bottom-nv.vh)<=2,JSON.stringify(nv));
+  rec('t70u: dolna nawigacja ≤18 px (bez safe-area), same ikonki (aria-label: Moduły, Pulpit, Pacjent, Więcej – bez Drukuj), szerokie obszary ≥70 px, przy dolnej krawędzi',JSON.stringify(nv.labels)==='["Moduły","Pulpit","Pacjent","Więcej"]'&&nv.h<=18&&!nv.vis&&nv.minW>=70&&Math.abs(nv.bottom-nv.vh)<=2,JSON.stringify(nv));
   await shot('m1-pulpit-412x915.png');
   await page.tap('[data-mnav="mods"]');await sleep(400);
   const sb=await page.evaluate(()=>{const s=document.getElementById('sidebar');const r=s.getBoundingClientRect();return{open:document.body.classList.contains('nav-open'),w:r.width,vis:getComputedStyle(s).display!=='none'};});
@@ -45,7 +45,7 @@ let n=0,fail=0;const rec=(name,ok,info)=>{n++;if(!ok)fail++;console.log((ok?'PAS
   // arkusz „Więcej”
   await page.tap('[data-mnav="more"]');await sleep(300);
   const mo=await page.evaluate(()=>{const m=document.getElementById('mMore');return{vis:getComputedStyle(m).display!=='none',ids:[...m.querySelectorAll('button')].map(b=>b.id)};});
-  rec('„Więcej”: Ten ekran, Źródła, Raport zbiorczy, Zapisz moduł, Następny pacjent (te same przyciski)',mo.vis&&['printMod','srcMod','printAll','pinModule','nextPt'].every(i=>mo.ids.includes(i)),JSON.stringify(mo));
+  rec('„Więcej”: Źródła, Zapisz moduł, Następny pacjent; t70u: bez „Ten ekran” i „Raport zbiorczy” (druk usunięty)',mo.vis&&['srcMod','pinModule','nextPt'].every(i=>mo.ids.includes(i))&&!mo.ids.includes('printMod')&&!mo.ids.includes('printAll'),JSON.stringify(mo));
   await page.tap('[data-mnav="more"]');await sleep(200);
   // NAC → karty, inputmode
   await page.evaluate(()=>document.querySelector('[data-clin-tab="para"]').click());await sleep(500);
@@ -56,10 +56,6 @@ let n=0,fail=0;const rec=(name,ok,info)=>{n++;if(!ok)fail++;console.log((ok?'PAS
   rec('Pola liczbowe: inputmode=decimal',im.bad.length===0,JSON.stringify(im));
   rec('Zatrucia: brak poziomego przewijania',await hs(),'');
   await page.evaluate(()=>{document.querySelector('[data-clin-tab="alcohols"]').click();document.getElementById('main').scrollTop=0;});await sleep(500);await shot('m1-zatrucia-412x915.png');
-  // druk z telefonu
-  await page.tap('[data-mnav="print"]');await sleep(1200);
-  const pr=await page.evaluate(()=>({n:window.__pr,pa:!!document.getElementById('printArea')&&document.getElementById('printArea').innerText.length}));
-  rec('„Drukuj” (dolny pasek) → wydruk modułu (window.print, #printArea wypełniony) – Chrome Android: drukuj / zapisz PDF / udostępnij',pr.n>=1&&pr.pa>50,JSON.stringify(pr));
   // ZP (Zapalenie płuc – antybiotykoterapia)
   await page.evaluate(()=>SKS.show('cap'));await sleep(900);await page.evaluate(()=>document.querySelector('[data-clin-tab="abx51"]').click());await sleep(1800);
   const zp=await page.evaluate(()=>{const f=document.getElementById('zpFrame');if(!f)return null;const d=f.contentDocument;return{sw:d.documentElement.scrollWidth,cw:d.documentElement.clientWidth,css:!!d.querySelector('link[href*="mobile.css"]')};});
@@ -78,6 +74,12 @@ let n=0,fail=0;const rec=(name,ok,info)=>{n++;if(!ok)fail++;console.log((ok?'PAS
   // t69u: dopisek „Narzędzie pomocnicze…” nie jest widoczny na ekranie (moduł, iframe pomp, Kalkulatory)
   const disc=[];for(const id of ['pompy','kalk','el','trop','dashboard']){await page.evaluate(id=>SKS.show(id),id);await sleep(1600);const t=await page.evaluate(()=>{let s=document.body.innerText;for(const f of document.querySelectorAll('#main iframe')){try{s+=f.contentDocument.body.innerText;}catch(e){}}return s;});if(/Narzędzie pomocnicze/.test(t))disc.push(id);}
   rec('t69u: brak „Narzędzie pomocnicze…” na ekranie (pompy, kalkulatory, elektrolity, troponina, pulpit)',disc.length===0,disc.join(','));
+  // t70u: brak jakiejkolwiek funkcji drukowania na ekranie (wszystkie moduły + iframe)
+  const prv=[];const mods=await page.evaluate(()=>SKM.list.filter(m=>!m.sep&&m.id).map(m=>m.id));
+  for(const id of mods){await page.evaluate(id=>SKS.show(id),id);await sleep(900);
+   const f=await page.evaluate(()=>{const chk=d=>[...d.querySelectorAll('button,a,[role=button]')].filter(e=>e.getClientRects().length&&getComputedStyle(e).visibility!=='hidden'&&/🖨|drukuj|wydruk|raport zbiorczy/i.test((e.textContent||'')+' '+(e.title||''))).map(e=>(e.id||e.className||e.tagName)+':'+(e.textContent||'').trim().slice(0,30));let r=chk(document);for(const fr of document.querySelectorAll('#main iframe')){try{r=r.concat(chk(fr.contentDocument).map(x=>'[iframe] '+x));}catch(e){}}return r;});
+   if(f.length)prv.push(id+' → '+f.join(' | '));}
+  rec('t70u: w żadnym module brak widocznego przycisku druku / raportu do druku; window.print wyłączone',prv.length===0&&await page.evaluate(()=>String(window.print).indexOf('native code')<0),prv.join(' ;; '));
   rec('Brak błędów JS',errs.length===0,errs.join(' | '));
   console.log(fail?`FAILS ${fail}/${n}`:`ALL PASS ${n}/${n}`);await br.close();process.exit(fail?1:0);
 })().catch(e=>{console.error(e);process.exit(2);});

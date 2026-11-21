@@ -24,6 +24,7 @@ function audit(){ // wykonywane w kontekście dokumentu (głównego lub iframe)
   }
   const tw=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);let nd;const seen=new Set();
   while(nd=tw.nextNode()){if(!nd.nodeValue.trim())continue;const e=nd.parentElement;if(!e||seen.has(e))continue;seen.add(e);if(!inMain(e)||e.closest('svg,script,style,noscript,option'))continue;const r=vis(e);if(!r)continue;const fs=parseFloat(getComputedStyle(e).fontSize);if(fs<14-0.01)out.font.push(desc(e)+' '+fs+'px');}
+  for(const b of document.querySelectorAll('button,a,[role=button]')){if(b.getClientRects().length&&getComputedStyle(b).visibility!=='hidden'&&!b.closest('#printArea')&&/🖨|drukuj|wydruk|raport zbiorczy/i.test((b.textContent||'')+' '+(b.title||'')))out.hs.push('t70u: widoczny przycisk druku '+desc(b));}
   if(/Narzędzie pomocnicze/.test(document.body.innerText))out.font.push('t69u: widoczny dopisek „Narzędzie pomocnicze…”');
   return out;
 }

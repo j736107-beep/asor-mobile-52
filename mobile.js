@@ -36,7 +36,16 @@ function noDisc(root){
   n.nodeValue=n.nodeValue.replace(DISC_RE,'');
   if(!n.nodeValue.trim()&&(e.tagName==='B'||e.tagName==='STRONG')&&!e.textContent.trim())e.remove();});
 }
-function enhance(){var root=D.body;if(!root)return;noDisc(root);
+// t70u: wersja mobilna bez drukowania – ukryte wszystkie przyciski/odnośniki druku (silniki i buildery bez zmian, nie są wywoływane z UI).
+var PR_TXT=/🖨|\bdrukuj|\bwydruk|raport zbiorczy|\bprint\b/i,PR_ID=/print/i;
+function noPrint(root){[].forEach.call(root.querySelectorAll('button,a,[role=button],input[type=button],input[type=submit]'),function(e){if(e.classList.contains('m-noprint')||e.closest('#printArea'))return;
+ var t=(e.textContent||e.value||'')+' '+(e.getAttribute('title')||'')+' '+(e.getAttribute('aria-label')||'');
+ if(PR_ID.test(e.id||'')||PR_TXT.test(t)||/print\s*\(|printMod|\.print\b/.test(e.getAttribute('onclick')||''))e.classList.add('m-noprint');});
+ [].forEach.call(root.querySelectorAll('.tabPrint,.sk-print'),function(e){e.classList.add('m-noprint');});
+ var tw=D.createTreeWalker(root,NodeFilter.SHOW_TEXT),nd;while((nd=tw.nextNode())){if(nd.nodeValue.indexOf('algorytmy, wydruk i wyniki')>=0)nd.nodeValue=nd.nodeValue.replace('algorytmy, wydruk i wyniki','algorytmy i wyniki');}
+}
+try{w.print=function(){};}catch(e){}
+function enhance(){var root=D.body;if(!root)return;noDisc(root);noPrint(root);
  [].forEach.call(D.querySelectorAll('input[type=number]:not([inputmode])'),function(i){i.setAttribute('inputmode','decimal');});
  [].forEach.call(D.querySelectorAll('table'),function(t){if(!t.__m52||t.querySelector('td:not([data-label]),th:not([data-label])')){t.__m52=1;cardify(t);}});
  var m=TOP?(D.getElementById('main')||root):root;minFont(m);if(TOP){var s=D.getElementById('sidebar');if(s)minFont(s);var tp=D.getElementById('top');if(tp)minFont(tp);}
@@ -61,13 +70,13 @@ ready(function(){
  setInterval(upd,1500);
  // dolna nawigacja
  var nav=D.createElement('nav');nav.id='mNav';nav.setAttribute('aria-label','Nawigacja');
- var items=[['mods','☰','Moduły'],['home','⌂','Pulpit'],['pt','👤','Pacjent'],['print','🖨','Drukuj'],['more','⋯','Więcej']];
+ var items=[['mods','☰','Moduły'],['home','⌂','Pulpit'],['pt','👤','Pacjent'],['more','⋯','Więcej']];
  nav.innerHTML=items.map(function(i){return '<button type="button" data-mnav="'+i[0]+'" aria-expanded="false" aria-label="'+i[2]+'" title="'+i[2]+'"><i aria-hidden="true">'+i[1]+'</i><span class="m-lbl">'+i[2]+'</span></button>';}).join('');
  var wrap=D.getElementById('wrap');D.body.insertBefore(nav,wrap?wrap.nextSibling:null);
  function nb(k,o){var b=nav.querySelector('[data-mnav="'+k+'"]');if(b)b.setAttribute('aria-expanded',String(!!o));}
  // arkusz „Więcej”: istniejące przyciski (te same obsługi zdarzeń) przeniesione z nagłówka
  var more=D.createElement('div');more.id='mMore';more.setAttribute('role','dialog');more.setAttribute('aria-label','Więcej');more.innerHTML='<h4>Więcej</h4>';
- ['printMod','srcMod','printAll','pinModule','nextPt'].forEach(function(id){var b=D.getElementById(id);if(b)more.appendChild(b);});
+ ['srcMod','pinModule','nextPt'].forEach(function(id){var b=D.getElementById(id);if(b)more.appendChild(b);});
  D.body.insertBefore(more,nav);
  function closeAll(){D.body.classList.remove('m-more-open');nb('more',false);if(D.body.classList.contains('nav-open')){D.body.classList.remove('nav-open');}nb('mods',false);}
  more.addEventListener('click',function(e){if(e.target.closest('button'))setTimeout(function(){D.body.classList.remove('m-more-open');nb('more',false);},0);});
@@ -75,7 +84,6 @@ ready(function(){
   if(k==='mods'){var o=!D.body.classList.contains('nav-open');D.body.classList.remove('m-more-open');nb('more',false);D.body.classList.toggle('nav-open',o);nb('mods',o);if(o){var s=D.getElementById('moduleSearch');}}
   else if(k==='home'){closeAll();if(w.SKS&&SKS.show)SKS.show('dashboard');}
   else if(k==='pt'){closeAll();setPt(!D.body.classList.contains('m-pt-open'));}
-  else if(k==='print'){closeAll();var p=D.getElementById('skPrint')||D.getElementById('printMod');if(p)p.click();}
   else if(k==='more'){var o2=!D.body.classList.contains('m-more-open');D.body.classList.remove('nav-open');nb('mods',false);D.body.classList.toggle('m-more-open',o2);nb('more',o2);}
  });
  var side=D.getElementById('side');if(side)side.addEventListener('click',function(e){if(e.target.closest('button'))setTimeout(function(){nb('mods',D.body.classList.contains('nav-open'));},0);});
