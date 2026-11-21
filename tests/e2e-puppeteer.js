@@ -9,7 +9,7 @@ const errs=[];page.on('pageerror',e=>errs.push('pageerror '+e.message));page.on(
 page.on('dialog',d=>d.accept());
 await page.goto(BASE,{waitUntil:'networkidle0'});
 await page.evaluate(()=>{localStorage.clear();sessionStorage.clear();});await page.reload({waitUntil:'networkidle0'});
-const ver=await page.$eval('#ver',e=>e.textContent);rec('Wersja 5.2 w nagłówku',/5\.2 \(testowa\)/.test(ver)&&/09\.11\.2026/.test(ver),ver);
+const ver=await page.$eval('#ver',e=>e.textContent);rec('Wersja 5.2 w nagłówku',/5\.2 \(testowa\)/.test(ver)&&/21\.11\.2026/.test(ver),ver);
 const go=async id=>{await page.evaluate(id=>{const b=document.querySelector('#side button[data-id="'+id+'"]');b.click();},id);await sleep(700);};
 const frameOf=async src=>{for(let k=0;k<30;k++){const f=page.frames().find(f=>f.url().includes(src));if(f){try{await f.waitForSelector('body');return f;}catch(e){}}await sleep(200);}return null;};
 // ---- pasek pacjenta: imię i nazwisko, wiek (ręcznie), płeć – bez numeru identyfikacyjnego (RODO)
@@ -85,7 +85,7 @@ await p2.close();
 // ---- Druk A4: moduł cap
 await page.evaluate(()=>{SORReport.capture(SKS.active());SORReport.fill([{module:'cap'}]);});
 await page.emulateMediaType('print');const pdf=await page.pdf({format:'A4',printBackground:true});await page.emulateMediaType('screen');
-const pages=(Buffer.from(pdf).toString('latin1').match(/\/Type\s*\/Page[^s]/g)||[]).length;fs.writeFileSync('/workspace/print_cap.pdf',pdf);
+const pages=(Buffer.from(pdf).toString('latin1').match(/\/Type\s*\/Page[^s]/g)||[]).length;fs.writeFileSync('/tmp/m52_print_cap.pdf',pdf);
 const ph=await page.evaluate(()=>document.getElementById('printArea').textContent);
 rec('Druk A4 modułu: 1–2 strony, nagłówek pacjenta, bez sekcji blokady wypisu',pages>=1&&pages<=2&&/Jan Testowy/.test(ph)&&/wiek:\s*\d+ lat/.test(ph)&&/płeć:/.test(ph)&&!/WSTRZYMAJ|wstrzymaj wypis/i.test(ph),'stron: '+pages);
 const navp=await page.$('#skPrint');rec('Przycisk „Drukuj do dokumentacji (A4)” w module',!!navp,'');
@@ -108,8 +108,8 @@ rec('ZP-8 po „Następny pacjent”: pusty stan, brak wybranego miejsca',z8.on.
 // storage prefix
 const pref=await page.evaluate(()=>{localStorage.setItem('probe','1');return window.SK_PREFIX;});
 const p3=await br.newPage();await p3.goto(BASE+'manifest.webmanifest');const rawKeys=await p3.evaluate(()=>Object.keys(localStorage));await p3.close();
-rec('Prefiks magazynu v52: aktywny (surowe klucze)',pref==='v52:'&&rawKeys.length>0&&rawKeys.every(k=>k.indexOf('v52:')===0),rawKeys.join(','));
+rec('Prefiks magazynu m52: aktywny (surowe klucze; wersja mobilna osobno od PC v52:)',pref==='m52:'&&rawKeys.length>0&&rawKeys.every(k=>k.indexOf('m52:')===0),rawKeys.join(','));
 rec('Brak błędów JS w całym przebiegu',errs.length===0,errs.slice(0,8).join(' | '));
-fs.writeFileSync('/workspace/e2e_results.json',JSON.stringify({R,errs,eIds},null,1));
-await br.close();
+fs.writeFileSync('/tmp/m52_e2e_results.json',JSON.stringify({R,errs,eIds},null,1));
+await br.close();const nf=R.filter(r=>r[1]==='FAIL').length;console.log(nf?'FAILS: '+nf+'/'+R.length:'ALL PASS '+R.length+'/'+R.length);process.exit(nf?1:0);
 })().catch(e=>{console.error('CRASH',e);process.exit(2);});

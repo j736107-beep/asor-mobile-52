@@ -1,3 +1,21 @@
+# Asystent SOR mobile 5.2 (wersja MOBILNA, testowa)
+
+Osobna wersja na telefon (Samsung Galaxy S25 Ultra ~412×915 CSS px; testowane 360–430 px), **merytorycznie identyczna** z wersją PC
+`asor-podglad-52` @ `f2f5931` (SW `asor-v52-fix28a`). Repo PC nie jest modyfikowane.
+
+- Silniki obliczeń, dane, dawki, pompy, telefony i wydruki – bez zmian (wszystkie testy node przechodzą identycznie; zmienione tylko
+  testy sprawdzające markę: nazwa cache SW, prefiks magazynu, wpis „O programie”, nagłówek).
+- Zmiany tylko w warstwie ekranu: `mobile.css` (tylko `@media screen`, wydruk bez zmian) i `mobile.js` (nagłówek kompaktowy, chip i panel
+  pacjenta, dolna nawigacja: Moduły / Pulpit / Pacjent / Drukuj / Więcej, tabele ≥3 kolumn → karty z etykietami, `inputmode=decimal`,
+  minimalna czcionka 14 px), dołączone także w modułach `mod/*` (iframe). Tytuł dokumentu w `advanced.js`.
+- Osobne dane: prefiks magazynu `m52:` (PC: `v52:`), cache SW `asor-m52-*` (czyszczone tylko własne), manifest „Asystent SOR mobile”
+  (start_url/scope `./`, standalone, portrait).
+- Testy: `tests/m-audyt-puppeteer.js` (audyt każdego modułu i zakładki: brak poziomego przewijania, przyciski/pola ≥48 px, inne klikalne
+  ≥44 px, tekst ≥14 px, czcionka pól ≥16 px; 412, 360, 430 px), `tests/e2e-m52-puppeteer.js`, `tests/m-env.js` (wszystkie e2e jako
+  telefon 412×915, isMobile/hasTouch), `tests/runallm52.sh`.
+
+---
+
 # Asystent lekarza SOR – wersja 5.2 (testowa) · etap 4 · 09.11.2026
 
 Narzędzie pomocnicze, **niecertyfikowane**. Każdą dawkę i decyzję weryfikuje lekarz.

@@ -43,7 +43,7 @@ const JUNK=/Źródła|Źródło|Wytyczne i ChPL|ChPL 4\.2|Efekt:|Wpisz wynik|Wpi
   // Antykoagulacja – kratka w nagłówku
   await fresh();await setP({pw:'80',pa:'60'});await tab('acoag','vka');await setF({inr:'4.5'});await sleep(200);
   const hc=await page.evaluate(()=>{const r=document.querySelector('.h2row'),h=r&&r.querySelector('h2'),l=r&&r.querySelector('.h2chk'),fe=document.querySelector('#main #f #bleed');return{has:!!l,txt:l&&l.textContent.trim(),fsH:h&&getComputedStyle(h).fontSize,fsL:l&&getComputedStyle(l).fontSize,right:l&&h&&(l.getBoundingClientRect().left>h.getBoundingClientRect().left),formHidden:fe&&fe.closest('label').style.display==='none'};});
-  rec('Antykoagulacja (Warfaryna): kratka „krwawienie zagrażające życiu / pilny zabieg” w nagłówku, po prawej, czcionka jak nagłówek; pole w formularzu ukryte',hc.has&&/krwawienie zagrażające życiu \/ pilny zabieg/.test(hc.txt)&&hc.fsH===hc.fsL&&hc.right&&hc.formHidden,JSON.stringify(hc));
+  rec('Antykoagulacja (Warfaryna): kratka „krwawienie zagrażające życiu / pilny zabieg” w nagłówku (PC: po prawej; m52 telefon: pod tytułem), czcionka jak nagłówek; pole w formularzu ukryte',hc.has&&/krwawienie zagrażające życiu \/ pilny zabieg/.test(hc.txt)&&hc.fsH===hc.fsL&&(hc.right||page.viewport().width<=430)&&hc.formHidden,JSON.stringify(hc));
   await page.click('#hc_bleed');await sleep(400);t=await txt();
   rec('Kratka w nagłówku działa: witamina K / PCC (jak dawniej)',/Witamina K|witamina K/.test(t)&&/PCC/.test(t),t.slice(0,300));
   let pr=await printMod();rec('Wydruk VKA: wskazanie „krwawienie zagrażające życiu / pilny zabieg” zachowane',/krwawienie zagrażające życiu \/ pilny zabieg/.test(pr)&&/Witamina K/.test(pr),pr);
@@ -61,7 +61,7 @@ const JUNK=/Źródła|Źródło|Wytyczne i ChPL|ChPL 4\.2|Efekt:|Wpisz wynik|Wpi
   // EUCAST
   await show('leki');t=await txt();rec('Leki: brak „To nie lokalna tabela breakpointów…”',!/breakpointów|offline tabeli EUCAST/.test(t)&&/EUCAST/.test(t),t.slice(0,200));
   // O programie
-  await show('about');t=await txt();rec('O programie: wersja i data 21.11.2026, wpis fix25, bez „Test techniczny, nie walidacja…”',/Wersja 5\.2 \(testowa\)/.test(t)&&/21\.11\.2026/.test(t)&&/porządki i czytelność/.test(t)&&!/nie testowano na sprzęcie szpitalnym/.test(t)&&!/Narzędzie pomocnicze – niecertyfikowane/.test(t),t.slice(0,300));
+  await show('about');t=await txt();rec('O programie: wersja i data 21.11.2026, wpis fix25, bez „Test techniczny, nie walidacja…”',/Wersja (mobilna )?5\.2 \(testowa\)/.test(t)&&/21\.11\.2026/.test(t)&&/porządki i czytelność/.test(t)&&!/nie testowano na sprzęcie szpitalnym/.test(t)&&!/Narzędzie pomocnicze – niecertyfikowane/.test(t),t.slice(0,300));
   // AF
   await fresh();await setP({pw:'80',pa:'60'});await tab('af','e');
   const af=await page.evaluate(()=>{const l=document.querySelector('#main #f #k_oac').closest('label'),s=document.querySelector('#main #f #o_stab');return{txt:l.innerText.replace(/\s+/g,' ').trim(),fs:getComputedStyle(l).fontSize,sel:getComputedStyle(s).fontSize,base:getComputedStyle(document.documentElement).fontSize,gl:!!l.querySelector('.pl')};});

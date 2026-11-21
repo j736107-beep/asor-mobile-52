@@ -1,5 +1,5 @@
 // m52: automatyczny audyt układu mobilnego – każdy moduł (i każda zakładka) przy szerokości W (domyślnie 412):
-// brak poziomego przewijania (dokument, #main, iframe), elementy klikalne ≥44 px wysokości, tekst ≥14 px, pola tekstowe ≥16 px (brak zoomu przy focusie).
+// brak poziomego przewijania (dokument, #main, iframe), przyciski i pola ≥48 px, pozostałe elementy klikalne (linki, summary, etykiety checkbox/radio) ≥44 px, tekst ≥14 px, pola tekstowe ≥16 px (brak zoomu przy focusie).
 const pp=require('puppeteer-core');
 const BASE=process.env.BASE||'http://localhost:8781/',W=+(process.env.W||412),H=+(process.env.H||915),VERB=process.env.VERB||'';
 const sleep=t=>new Promise(r=>setTimeout(r,t));
@@ -15,7 +15,7 @@ function audit(){ // wykonywane w kontekście dokumentu (głównego lub iframe)
     if(!inMain(e))continue;const r=vis(e);if(!r)continue;if(e.closest('.m-exempt'))continue;
     let t=e;if((e.type==='checkbox'||e.type==='radio')){const l=e.closest('label')||(e.id&&document.querySelector('label[for="'+e.id+'"]'));if(l)t=l;}
     if(e.tagName==='A'&&e.closest('p,li,td,.mut,small')&&!e.closest('nav')){const pr=e.parentElement.getBoundingClientRect();if(e.innerText&&pr.width>r.width*1.5)continue;} // link w tekście (WCAG 2.5.8 – wyjątek inline)
-    const rr=t.getBoundingClientRect();if(rr.height<44-0.5)out.small.push(desc(e)+' '+Math.round(rr.width)+'×'+Math.round(rr.height));
+    const need=(t===e&&/^(BUTTON|SELECT|TEXTAREA|INPUT)$/.test(e.tagName)&&e.type!=='range')?48:44;const rr=t.getBoundingClientRect();if(rr.height<need-0.5)out.small.push(desc(e)+' '+Math.round(rr.width)+'×'+Math.round(rr.height));
     if(rr.right>vw+1)out.hs.push('poza ekranem '+desc(e)+' right='+Math.round(rr.right));
     if((e.tagName==='INPUT'&&!/checkbox|radio|range|button|submit|color|file/.test(e.type))||e.tagName==='SELECT'||e.tagName==='TEXTAREA'){if(parseFloat(getComputedStyle(e).fontSize)<16)out.inp.push(desc(e)+' '+getComputedStyle(e).fontSize);}
   }
@@ -36,7 +36,7 @@ function audit(){ // wykonywane w kontekście dokumentu (głównego lub iframe)
   const one=async(label,frame)=>{let r=await page.evaluate(audit.toString().replace(/^function audit\(\)/,'(function()')+')()');
     for(const fh of await page.$$('#main iframe')){const fr=await fh.contentFrame();if(fr){try{await fr.waitForSelector('body',{timeout:5000});const r2=await fr.evaluate(audit.toString().replace(/^function audit\(\)/,'(function()')+')()');for(const k in r2)r[k]=r[k].concat(r2[k].map(x=>'[iframe] '+x));}catch(e){r.hs.push('iframe err '+e.message);}}}
     const bad=r.hs.length+r.small.length+r.font.length+r.inp.length;for(const k in tot)tot[k]+=r[k].length;
-    rec(`${W}px ${label}: brak poziomego przewijania, klikalne ≥44 px, tekst ≥14 px, pola ≥16 px`,bad===0,JSON.stringify({hs:r.hs.slice(0,8),small:r.small.slice(0,VERB?400:12),font:r.font.slice(0,VERB?400:10),inp:r.inp.slice(0,8),n:[r.hs.length,r.small.length,r.font.length,r.inp.length]}));};
+    rec(`${W}px ${label}: brak poziomego przewijania, przyciski/pola ≥48 px, inne klikalne ≥44 px, tekst ≥14 px, czcionka pól ≥16 px`,bad===0,JSON.stringify({hs:r.hs.slice(0,8),small:r.small.slice(0,VERB?400:12),font:r.font.slice(0,VERB?400:10),inp:r.inp.slice(0,8),n:[r.hs.length,r.small.length,r.font.length,r.inp.length]}));};
   await one('pasek/nagłówek + pulpit',false);
   for(const m of mods){await page.evaluate(id=>SKS.show(id),m.id);await sleep(m.frame?1800:700);await one(m.id+' ('+m.name+')',m.frame);
     const tabs=m.frame?[]:await page.evaluate(()=>[...document.querySelectorAll('#main .tabs button, #main [data-clin-tab]')].map((b,i)=>i));

@@ -2,7 +2,7 @@
   'use strict';
   var search=document.getElementById('moduleSearch'),nav=document.getElementById('side'),only=false,favorites=[];
   try{var saved=JSON.parse(localStorage.getItem('sor_favorites')||'[]');if(Array.isArray(saved))favorites=saved.filter(function(s){return typeof s==='string';});}catch(e){}
-  document.title='Asystent lekarza SOR';
+  document.title='Asystent SOR mobile';
   document.getElementById('ver').textContent='wersja 5.2 (testowa) · 21.11.2026';
   var pin=document.createElement('button');pin.id='pinModule';pin.className='tg';pin.title='Dodaj lub usuń bieżący moduł z ulubionych';document.getElementById('top').appendChild(pin);
   var menu=document.createElement('button');menu.id='mobileMenu';menu.className='tg';menu.textContent='☰ Moduły';menu.setAttribute('aria-expanded','false');document.getElementById('top').prepend(menu);

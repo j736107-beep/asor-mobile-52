@@ -12,7 +12,7 @@ let n=0,fail=0;const rec=(name,ok,info)=>{n++;if(!ok)fail++;console.log((ok?'PAS
   await page.goto(BASE+'?t='+Date.now(),{waitUntil:'networkidle2',timeout:60000});await page.evaluate(()=>{window.print=()=>{};});await sleep(300);
   const setP=o=>page.evaluate(o=>{for(const [id,v] of Object.entries(o)){const e=document.getElementById(id);e.value=v;e.dispatchEvent(new Event('input',{bubbles:true}));}},o);
   const shot=async name=>{if(!SHOTS)return;const vp=page.viewport();const H=await page.evaluate(()=>{const m=document.getElementById('main');const r=m.getBoundingClientRect();return Math.ceil(r.top+m.scrollHeight+20);});await page.setViewport({width:vp.width,height:Math.min(Math.max(H,vp.height),6000)});await sleep(400);await page.screenshot({path:SHOTS+'/'+name});await page.setViewport(vp);await sleep(200);};
-  const sw=await page.evaluate(()=>fetch('sw.js?'+Date.now()).then(r=>r.text()));rec('SW asor-v52-fix28 lub nowszy',/asor-v52-fix(2[8-9]|[3-9]\d)/.test(sw),sw.slice(0,40));
+  const sw=await page.evaluate(()=>fetch('sw.js?'+Date.now()).then(r=>r.text()));rec('SW asor-v52-fix28 lub nowszy',(/asor-v52-fix(2[8-9]|[3-9]\d)/.test(sw)||/asor-m52-\d+/.test(sw)),sw.slice(0,40));
   // GI
   await page.evaluate(()=>SKS.show('gib'));await sleep(1200);
   const gi=await page.evaluate(()=>{const b=document.querySelector('#main [data-gi-endo-tel]');return b?{t:b.innerText,h:[...b.querySelectorAll('a[href^="tel:"]')].map(a=>a.getAttribute('href'))}:null;});
