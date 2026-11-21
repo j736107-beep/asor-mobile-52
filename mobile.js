@@ -27,7 +27,16 @@ function minFont(root){
   if(e.closest('#printArea,svg,script,style,option'))continue;var fs=parseFloat(w.getComputedStyle(e).fontSize);
   if(fs&&fs<14){e.style.setProperty('font-size','14px','important');e.__mf=1;}}
 }
-function enhance(){var root=D.body;if(!root)return;
+// t69u: bez dopisku „Narzędzie pomocnicze…” na ekranie wersji mobilnej (wydruki A4 bez zmian – #printArea i szablony druku pomijane).
+var DISC_RE=/Narzędzie pomocnicze(?:[,:]?\s*[–—-]?\s*niecertyfikowane)?[^.]*(?:\.|$)\s*/;
+function noDisc(root){
+ [].forEach.call(root.querySelectorAll('.disc,.kk-disc,footer,.sub'),function(e){if(!e.closest('#printArea')&&/^\s*Narzędzie pomocnicze/.test(e.textContent))e.classList.add('m-disc-hide');});
+ var tw=D.createTreeWalker(root,NodeFilter.SHOW_TEXT),nd,list=[];while((nd=tw.nextNode())){if(nd.nodeValue.indexOf('Narzędzie pomocnicze')>=0)list.push(nd);}
+ list.forEach(function(n){var e=n.parentElement;if(!e||e.closest('#printArea,script,style,[data-print],.print-only,.m-disc-hide'))return;
+  n.nodeValue=n.nodeValue.replace(DISC_RE,'');
+  if(!n.nodeValue.trim()&&(e.tagName==='B'||e.tagName==='STRONG')&&!e.textContent.trim())e.remove();});
+}
+function enhance(){var root=D.body;if(!root)return;noDisc(root);
  [].forEach.call(D.querySelectorAll('input[type=number]:not([inputmode])'),function(i){i.setAttribute('inputmode','decimal');});
  [].forEach.call(D.querySelectorAll('table'),function(t){if(!t.__m52||t.querySelector('td:not([data-label]),th:not([data-label])')){t.__m52=1;cardify(t);}});
  var m=TOP?(D.getElementById('main')||root):root;minFont(m);if(TOP){var s=D.getElementById('sidebar');if(s)minFont(s);var tp=D.getElementById('top');if(tp)minFont(tp);}
@@ -53,7 +62,7 @@ ready(function(){
  // dolna nawigacja
  var nav=D.createElement('nav');nav.id='mNav';nav.setAttribute('aria-label','Nawigacja');
  var items=[['mods','☰','Moduły'],['home','⌂','Pulpit'],['pt','👤','Pacjent'],['print','🖨','Drukuj'],['more','⋯','Więcej']];
- nav.innerHTML=items.map(function(i){return '<button type="button" data-mnav="'+i[0]+'" aria-expanded="false"><i aria-hidden="true">'+i[1]+'</i>'+i[2]+'</button>';}).join('');
+ nav.innerHTML=items.map(function(i){return '<button type="button" data-mnav="'+i[0]+'" aria-expanded="false" aria-label="'+i[2]+'" title="'+i[2]+'"><i aria-hidden="true">'+i[1]+'</i><span class="m-lbl">'+i[2]+'</span></button>';}).join('');
  var wrap=D.getElementById('wrap');D.body.insertBefore(nav,wrap?wrap.nextSibling:null);
  function nb(k,o){var b=nav.querySelector('[data-mnav="'+k+'"]');if(b)b.setAttribute('aria-expanded',String(!!o));}
  // arkusz „Więcej”: istniejące przyciski (te same obsługi zdarzeń) przeniesione z nagłówka

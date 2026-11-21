@@ -14,28 +14,28 @@ let n=0,fail=0;const rec=(name,ok,info)=>{n++;if(!ok)fail++;console.log((ok?'PAS
   await page.goto(BASE+'?t='+Date.now(),{waitUntil:'networkidle2',timeout:60000});await page.evaluate(()=>{window.__pr=0;window.print=()=>{window.__pr++;};});await sleep(600);
   const setP=o=>page.evaluate(o=>{for(const [id,v] of Object.entries(o)){const e=document.getElementById(id);e.value=v;e.dispatchEvent(new Event('input',{bubbles:true}));}},o);
   const hs=()=>page.evaluate(()=>{const d=document.documentElement,m=document.getElementById('main');return d.scrollWidth<=d.clientWidth+1&&(!m||m.scrollWidth<=m.clientWidth+1);});
-  const shot=async name=>{if(!SHOTS)return;await sleep(600);await page.screenshot({path:SHOTS.replace(/\/$/,'')+'/'+name});};
+  const SHP=process.env.SHOTP||'m1-';const shot=async name=>{if(!SHOTS)return;await sleep(600);await page.screenshot({path:SHOTS.replace(/\/$/,'')+'/'+name.replace(/^m1-/,SHP)});};
   // manifest / SW / tytuł / meta
   const mf=await page.evaluate(()=>fetch('manifest.webmanifest?'+Date.now()).then(r=>r.json()));
   rec('Manifest: „Asystent SOR mobile”, start_url/scope ./, standalone, portrait',mf.name==='Asystent SOR mobile'&&mf.start_url==='./'&&mf.scope==='./'&&mf.display==='standalone'&&mf.orientation==='portrait',JSON.stringify(mf));
   const sw=await page.evaluate(()=>fetch('sw.js?'+Date.now()).then(r=>r.text()));
   rec('SW: cache asor-m52-*, czyści tylko własne cache (asor-m52), mobile.css/js w cache',/const C='asor-m52-\d+'/.test(sw)&&/indexOf\('asor-m52'\)===0/.test(sw)&&!/indexOf\('asor-v52'\)/.test(sw)&&/"mobile\.css"/.test(sw)&&/"mobile\.js"/.test(sw),sw.slice(0,60));
-  const meta=await page.evaluate(()=>({t:document.title,vp:document.querySelector('meta[name=viewport]').content,brand:document.querySelector('#top .brand').textContent}));
-  rec('Tytuł i nagłówek „Asystent SOR mobile”, viewport-fit=cover (safe-area), zoom dozwolony',/Asystent SOR mobile/.test(meta.t)&&/Asystent SOR mobile/.test(meta.brand)&&/viewport-fit=cover/.test(meta.vp)&&!/user-scalable=no|maximum-scale=1/.test(meta.vp),JSON.stringify(meta));
+  const meta=await page.evaluate(()=>({t:document.title,vp:document.querySelector('meta[name=viewport]').content,top:document.getElementById('top').innerText,foot:(document.querySelector('.nav-foot')||{}).offsetHeight||0}));
+  rec('Tytuł „Asystent SOR mobile”; t69u: w górnym pasku brak nazwy/wersji/daty, stopka menu ukryta; viewport-fit=cover, zoom dozwolony',meta.t==='Asystent SOR mobile'&&!/Asystent|wersja|5\.2|21\.11|Narzędzie/.test(meta.top)&&meta.foot===0&&/viewport-fit=cover/.test(meta.vp)&&!/user-scalable=no|maximum-scale=1/.test(meta.vp),JSON.stringify(meta));
   // magazyn m52:
   await setP({pw:'80',pa:'60',ph:'175',pc:'1'});await sleep(400);
   const st=await page.evaluate(()=>{const raw=localStorage.__raw;const ks=[];for(let i=0;i<raw.length;i++)ks.push(raw.key(i));return{pref:window.SK_PREFIX,ks};});
   rec('localStorage z prefiksem m52: (osobno od PC v52:)',st.pref==='m52:'&&st.ks.length>0&&st.ks.every(k=>k.indexOf('m52:')===0),JSON.stringify(st));
   // nagłówek kompaktowy, chip
   const hd=await page.evaluate(()=>{const h=document.getElementById('top');document.body.classList.remove('m-pt-open');return{h:h.getBoundingClientRect().height,chip:document.getElementById('mPtChip').textContent,pos:getComputedStyle(h).position,base:getComputedStyle(document.documentElement).fontSize};});
-  rec('Nagłówek kompaktowy (≤90 px przy zwiniętym panelu), sticky, chip pacjenta „60 l. · 80 kg”, czcionka bazowa 17 px',hd.h<=90&&hd.pos==='sticky'&&/60 l\./.test(hd.chip)&&/80 kg/.test(hd.chip)&&hd.base==='17px',JSON.stringify(hd));
+  rec('t69u: górny pasek ≤38 px (1 cm, bez safe-area) przy zwiniętym panelu, jeden rząd, sticky, chip „60 l. · 80 kg”, czcionka bazowa 17 px',hd.h<=38&&hd.pos==='sticky'&&/60 l\./.test(hd.chip)&&/80 kg/.test(hd.chip)&&hd.base==='17px',JSON.stringify(hd));
   await page.tap('#mPtChip');await sleep(300);
   const po=await page.evaluate(()=>{const p=document.getElementById('pbar');const r=p.getBoundingClientRect();const pw=document.getElementById('pw').getBoundingClientRect();return{open:document.body.classList.contains('m-pt-open'),h:r.height,pwH:pw.height,fs:getComputedStyle(document.getElementById('pw')).fontSize};});
   rec('Dotknięcie chipu otwiera panel pacjenta; pole masy ≥48 px, czcionka ≥16 px',po.open&&po.h>100&&po.pwH>=48&&parseFloat(po.fs)>=16,JSON.stringify(po));
   await page.tap('[data-mnav="pt"]');await sleep(300);rec('„Pacjent” w dolnym pasku zamyka panel',!(await page.evaluate(()=>document.body.classList.contains('m-pt-open'))),'');
   // dolna nawigacja
-  const nv=await page.evaluate(()=>{const n=document.getElementById('mNav');const r=n.getBoundingClientRect();return{labels:[...n.querySelectorAll('button')].map(b=>b.lastChild.textContent.trim()),bottom:Math.round(r.bottom),vh:innerHeight,minH:Math.min(...[...n.querySelectorAll('button')].map(b=>b.getBoundingClientRect().height))};});
-  rec('Dolna nawigacja: Moduły, Pulpit, Pacjent, Drukuj, Więcej; przy dolnej krawędzi; przyciski ≥48 px',JSON.stringify(nv.labels)==='["Moduły","Pulpit","Pacjent","Drukuj","Więcej"]'&&Math.abs(nv.bottom-nv.vh)<=2&&nv.minH>=48,JSON.stringify(nv));
+  const nv=await page.evaluate(()=>{const n=document.getElementById('mNav');const r=n.getBoundingClientRect();return{labels:[...n.querySelectorAll('button')].map(b=>b.getAttribute('aria-label')),vis:[...n.querySelectorAll('.m-lbl')].filter(s=>s.getBoundingClientRect().width>1).map(s=>s.textContent).join(''),h:r.height,bottom:Math.round(r.bottom),vh:innerHeight,minW:Math.min(...[...n.querySelectorAll('button')].map(b=>b.getBoundingClientRect().width))};});
+  rec('t69u: dolna nawigacja ≤19 px (0,5 cm, bez safe-area), same ikonki (etykiety w aria-label: Moduły, Pulpit, Pacjent, Drukuj, Więcej), szerokie obszary ≥70 px, przy dolnej krawędzi',JSON.stringify(nv.labels)==='["Moduły","Pulpit","Pacjent","Drukuj","Więcej"]'&&nv.h<=19&&!nv.vis&&nv.minW>=70&&Math.abs(nv.bottom-nv.vh)<=2,JSON.stringify(nv));
   await shot('m1-pulpit-412x915.png');
   await page.tap('[data-mnav="mods"]');await sleep(400);
   const sb=await page.evaluate(()=>{const s=document.getElementById('sidebar');const r=s.getBoundingClientRect();return{open:document.body.classList.contains('nav-open'),w:r.width,vis:getComputedStyle(s).display!=='none'};});
@@ -75,6 +75,9 @@ let n=0,fail=0;const rec=(name,ok,info)=>{n++;if(!ok)fail++;console.log((ok?'PAS
   await page.evaluate(()=>SKS.openPompa('noradrenalina_c80'));await sleep(2000);
   const pm=await page.evaluate(()=>{const f=document.querySelector('#main iframe');const d=f.contentDocument;return{sw:d.documentElement.scrollWidth,cw:d.documentElement.clientWidth,t:d.body.innerText.slice(0,200)};});
   rec('Pompy (noradrenalina 80 µg/ml): brak poziomego przewijania w module',pm.sw<=pm.cw+1&&/Noradrenalina/.test(pm.t),JSON.stringify(pm));await shot('m1-pompy-412x915.png');
+  // t69u: dopisek „Narzędzie pomocnicze…” nie jest widoczny na ekranie (moduł, iframe pomp, Kalkulatory)
+  const disc=[];for(const id of ['pompy','kalk','el','trop','dashboard']){await page.evaluate(id=>SKS.show(id),id);await sleep(1600);const t=await page.evaluate(()=>{let s=document.body.innerText;for(const f of document.querySelectorAll('#main iframe')){try{s+=f.contentDocument.body.innerText;}catch(e){}}return s;});if(/Narzędzie pomocnicze/.test(t))disc.push(id);}
+  rec('t69u: brak „Narzędzie pomocnicze…” na ekranie (pompy, kalkulatory, elektrolity, troponina, pulpit)',disc.length===0,disc.join(','));
   rec('Brak błędów JS',errs.length===0,errs.join(' | '));
   console.log(fail?`FAILS ${fail}/${n}`:`ALL PASS ${n}/${n}`);await br.close();process.exit(fail?1:0);
 })().catch(e=>{console.error(e);process.exit(2);});

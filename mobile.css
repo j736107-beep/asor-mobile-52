@@ -2,7 +2,7 @@
    Zasady: jedna kolumna, brak poziomego przewijania, czcionka bazowa 17 px, pola/przyciski ≥48 px, pola ≥16 px (brak zoomu przy focusie),
    tabele → karty (mobile.js nadaje data-label), kompaktowy nagłówek, panel pacjenta zwijany, dolna nawigacja, safe-area. */
 @media screen{
-:root{--fs:17px;--mnav:62px}
+:root{--fs:17px;--mnav:19px;--mtop:38px}
 html{font-size:17px;-webkit-text-size-adjust:100%;text-size-adjust:100%}
 html.m52-top body{height:100vh;height:100dvh;overflow:hidden}
 body{font-size:17px;line-height:1.45;overflow-wrap:anywhere;-webkit-hyphens:auto;hyphens:auto}
@@ -121,4 +121,21 @@ body.nav-open #sidebar{display:flex!important}
 /* większe, wyraźne wyniki dawek */
 .big{font-size:1.45rem}
 .t3-dose,.clinical-result{font-size:17px}
+}
+
+/* m52 t69u (21.11.2026, decyzja lekarza): niskie paski – górny ≤38 CSS px (1 cm; safe-area-inset-top dodawany nad nim), dolny ≤19 CSS px (0,5 cm)
+   + safe-area-inset-bottom; bez napisów marki/wersji na górze (wersja tylko w „O programie”); obszary kliknięcia niskie, ale szerokie. */
+@media screen{
+header#top{min-height:0!important;height:auto;flex-wrap:nowrap!important;gap:6px!important;padding:calc(2px + env(safe-area-inset-top)) calc(6px + env(safe-area-inset-right)) 2px calc(6px + env(safe-area-inset-left))!important;align-items:center}
+body.m-pt-open header#top{flex-wrap:wrap!important}
+#top .brand,.nav-foot{display:none!important}
+#mPtChip{flex:1 1 auto!important;max-width:none!important;min-height:0!important;height:32px!important;padding:0 12px!important;font-size:15px!important;line-height:30px!important;border-radius:16px!important}
+#lamp{position:static!important;flex:0 0 18px!important;width:18px!important;height:18px!important;opacity:1!important}
+#lamp:not(.on){opacity:.45!important}
+#mute{min-height:0!important;height:32px!important;flex:0 0 52px!important;min-width:52px!important;font-size:1.05rem!important;line-height:1}
+#mNav{padding:0 calc(2px + env(safe-area-inset-right)) env(safe-area-inset-bottom) calc(2px + env(safe-area-inset-left))!important;gap:2px!important}
+#mNav button{min-height:0!important;height:19px!important;padding:0!important;border-radius:6px!important;font-size:14px!important;line-height:19px!important;flex-direction:row!important;gap:0!important}
+#mNav button i{font-size:14px!important;line-height:19px!important}
+#mNav button .m-lbl{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap}
+.m-disc-hide{display:none!important}
 }

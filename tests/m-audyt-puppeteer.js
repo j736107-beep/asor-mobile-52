@@ -15,12 +15,16 @@ function audit(){ // wykonywane w kontekście dokumentu (głównego lub iframe)
     if(!inMain(e))continue;const r=vis(e);if(!r)continue;if(e.closest('.m-exempt'))continue;
     let t=e;if((e.type==='checkbox'||e.type==='radio')){const l=e.closest('label')||(e.id&&document.querySelector('label[for="'+e.id+'"]'));if(l)t=l;}
     if(e.tagName==='A'&&e.closest('p,li,td,.mut,small')&&!e.closest('nav')){const pr=e.parentElement.getBoundingClientRect();if(e.innerText&&pr.width>r.width*1.5)continue;} // link w tekście (WCAG 2.5.8 – wyjątek inline)
-    const need=(t===e&&/^(BUTTON|SELECT|TEXTAREA|INPUT)$/.test(e.tagName)&&e.type!=='range')?48:44;const rr=t.getBoundingClientRect();if(rr.height<need-0.5)out.small.push(desc(e)+' '+Math.round(rr.width)+'×'+Math.round(rr.height));
+    const rr=t.getBoundingClientRect();const bar=e.closest('#mNav')||(e.closest('#top')&&!e.closest('#pbar'));
+    if(bar){if(rr.width<44||rr.height<18)out.small.push('[pasek] '+desc(e)+' '+Math.round(rr.width)+'×'+Math.round(rr.height));} // t69u: paski niskie (≤38/≤19 px) – wyjątek: obszar ≥44 px szerokości, ≥18 px wysokości
+    else{const need=(t===e&&/^(BUTTON|SELECT|TEXTAREA|INPUT)$/.test(e.tagName)&&e.type!=='range')?48:44;if(rr.height<need-0.5)out.small.push(desc(e)+' '+Math.round(rr.width)+'×'+Math.round(rr.height));
+    }
     if(rr.right>vw+1)out.hs.push('poza ekranem '+desc(e)+' right='+Math.round(rr.right));
     if((e.tagName==='INPUT'&&!/checkbox|radio|range|button|submit|color|file/.test(e.type))||e.tagName==='SELECT'||e.tagName==='TEXTAREA'){if(parseFloat(getComputedStyle(e).fontSize)<16)out.inp.push(desc(e)+' '+getComputedStyle(e).fontSize);}
   }
   const tw=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);let nd;const seen=new Set();
   while(nd=tw.nextNode()){if(!nd.nodeValue.trim())continue;const e=nd.parentElement;if(!e||seen.has(e))continue;seen.add(e);if(!inMain(e)||e.closest('svg,script,style,noscript,option'))continue;const r=vis(e);if(!r)continue;const fs=parseFloat(getComputedStyle(e).fontSize);if(fs<14-0.01)out.font.push(desc(e)+' '+fs+'px');}
+  if(/Narzędzie pomocnicze/.test(document.body.innerText))out.font.push('t69u: widoczny dopisek „Narzędzie pomocnicze…”');
   return out;
 }
 (async()=>{
