@@ -27,7 +27,7 @@ const JUNK=/Źródła|Źródło|Wytyczne i ChPL|ChPL 4\.2|Efekt:|Wpisz wynik|Wpi
   await fresh();await show('dashboard');let t=await txt();
   const nav=await page.evaluate(()=>[...document.querySelectorAll('#side button')].map(b=>b.dataset.id));
   rec('Pulpit: hasło bez rejestru; brak kafelka i wpisu menu „Rejestr leczenia”; brak „Testy techniczne…”',/Kalkulatory, algorytmy, wydruk i wyniki w jednej przestrzeni\./.test(t)&&!/Rejestr leczenia|rejestr leczenia/.test(t)&&!nav.includes('treatment-log')&&!/Testy techniczne nie zastępują/.test(t),JSON.stringify(nav).slice(0,200));
-  const hv=await page.evaluate(()=>({h:document.querySelector('#top .brand').innerText,f:(document.querySelector('.nav-foot')||{}).innerText,title:document.title}));
+  const hv=await page.evaluate(()=>{const v=e=>e&&e.getClientRects().length?e.innerText:'';return{h:v(document.querySelector('#top .brand')),f:v(document.querySelector('.nav-foot')),title:document.title};});
   rec('m52 t69u: nagłówek i stopka menu bez nazwy/wersji (wersja tylko w „O programie”), bez „Narzędzie pomocnicze – niecertyfikowane” i „etap 4”',!hv.h.trim()&&!(hv.f||'').trim()&&!/niecertyfikowane|etap 4/i.test(hv.h+hv.f+hv.title),JSON.stringify(hv));
   await page.evaluate(()=>SKS.show('treatment-log'));await sleep(800);
   rec('Stary odnośnik „treatment-log” → Pulpit dyżuru',await page.evaluate(()=>SKS.active&&SKS.active()&&SKS.active().id)==='dashboard',await page.evaluate(()=>SKS.active&&SKS.active()&&SKS.active().id));
