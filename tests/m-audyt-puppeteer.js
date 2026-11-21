@@ -34,7 +34,7 @@ function audit(){ // wykonywane w kontekście dokumentu (głównego lub iframe)
   const mods=await page.evaluate(()=>SKM.list.filter(m=>!m.sep&&m.id).map(m=>({id:m.id,name:m.name,frame:!!m.frame})));
   const tot={hs:0,small:0,font:0,inp:0};
   const one=async(label,frame)=>{let r=await page.evaluate(audit.toString().replace(/^function audit\(\)/,'(function()')+')()');
-    if(frame){const fh=await page.$('#main iframe');const fr=fh&&await fh.contentFrame();if(fr){try{await fr.waitForSelector('body',{timeout:5000});const r2=await fr.evaluate(audit.toString().replace(/^function audit\(\)/,'(function()')+')()');for(const k in r2)r[k]=r[k].concat(r2[k].map(x=>'[iframe] '+x));}catch(e){r.hs.push('iframe err '+e.message);}}}
+    for(const fh of await page.$$('#main iframe')){const fr=await fh.contentFrame();if(fr){try{await fr.waitForSelector('body',{timeout:5000});const r2=await fr.evaluate(audit.toString().replace(/^function audit\(\)/,'(function()')+')()');for(const k in r2)r[k]=r[k].concat(r2[k].map(x=>'[iframe] '+x));}catch(e){r.hs.push('iframe err '+e.message);}}}
     const bad=r.hs.length+r.small.length+r.font.length+r.inp.length;for(const k in tot)tot[k]+=r[k].length;
     rec(`${W}px ${label}: brak poziomego przewijania, klikalne ≥44 px, tekst ≥14 px, pola ≥16 px`,bad===0,JSON.stringify({hs:r.hs.slice(0,8),small:r.small.slice(0,VERB?400:12),font:r.font.slice(0,VERB?400:10),inp:r.inp.slice(0,8),n:[r.hs.length,r.small.length,r.font.length,r.inp.length]}));};
   await one('pasek/nagłówek + pulpit',false);

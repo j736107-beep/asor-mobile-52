@@ -70,7 +70,9 @@ ready(function(){
   else if(k==='more'){var o2=!D.body.classList.contains('m-more-open');D.body.classList.remove('nav-open');nb('mods',false);D.body.classList.toggle('m-more-open',o2);nb('more',o2);}
  });
  var side=D.getElementById('side');if(side)side.addEventListener('click',function(e){if(e.target.closest('button'))setTimeout(function(){nb('mods',D.body.classList.contains('nav-open'));},0);});
- var lastMod=null;setInterval(function(){var m=null;try{m=localStorage.getItem('sk_mod');}catch(e){}if(lastMod!==null&&m!==lastMod){closeAll();if(D.body.classList.contains('m-pt-open'))setPt(false);}lastMod=m;},400);
+ var lastMod;function curMod(){try{return localStorage.getItem('sk_mod');}catch(e){return null;}}lastMod=curMod();
+ function modChk(){var m=curMod();if(m!==lastMod){lastMod=m;closeAll();var mm=D.getElementById('main');if(mm)mm.scrollTop=0;if(D.body.classList.contains('m-pt-open'))setPt(false);}}
+ new MutationObserver(modChk).observe(D.getElementById('main')||D.body,{childList:true});setInterval(modChk,500);
  var openPt;try{openPt=localStorage.getItem('m_pt_open');}catch(e){}
  setPt(openPt==null?!val('pw'):openPt==='1');
 });
